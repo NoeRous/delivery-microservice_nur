@@ -21,8 +21,7 @@ No incluye frontend; expone una API REST para ser consumida por otros servicios 
 | Método   | Ruta                              | Acción                                      |
 | -------- | --------------------------------- | ------------------------------------------- |
 | **POST** | `/delivery/create-dealer`         | Crear un nuevo Repartidor                   |
-| **POST** | `/delivery/create-package`        | Crear un paquete                            |
-| **POST** | `/delivery/assign-package`        | Asignar un paquete a un Dealer              |
+| **POST** | `/delivery/create-package`        | Crear un paquete                            |              |
 | **POST** | `/delivery/:id/deliver`           | Marcar paquete como **Entregado**           |
 | **POST** | `/delivery/:id/transit`           | Marcar paquete como **En Camino**           |
 | **POST** | `/delivery/assign-packages-route` | Crear una ruta y asignar múltiples paquetes |
