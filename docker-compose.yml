@@ -2,7 +2,9 @@ version: "3.9"
 
 services:
   rest-api:
-    image: noemirous/proyecto_grupo1_delivery:1.0.0
+    image: compose-node
+    build: . 
+    #image: noemirous/proyecto_grupo1_delivery:1.0.0
     # build: . 
     container_name: rest-api
     ports:
