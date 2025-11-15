@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  rest-api:
+    image: noemirous/proyecto_grupo1_delivery:1.0.0
+    # build: . 
+    container_name: rest-api
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=${PORT}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - DB_NAME=${DB_NAME}
+    volumes: 
+      - code:/src
+    depends_on:
+      - db-server
+    restart: always
+
+  db-server:
+    image: postgres:16
+    container_name: db-server
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+    volumes:
+      - postgresql-data:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  code:
+  postgresql-data:
