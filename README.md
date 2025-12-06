@@ -52,3 +52,37 @@ No incluye frontend; expone una API REST para ser consumida por otros servicios 
 - PostgreSQL
 - TypeORM
 - CQRS (@nestjs/cqrs)
+
+
+
+# LEVANTAR PROYECTO CON DOCKER 
+
+## PASO 1 
+
+crear el archivo .env envase a env.example
+
+## PASO 2
+
+ejecutar el comando 
+
+docker-compose up -d
+
+
+
+# LEVANTAR PROYECTO SIN DOCKER Y EJECUACIÓN TEST 
+
+## PASO 1 
+
+crear el archivo .env envase a env.example
+
+## PASO 2
+
+ejecutar el comando 
+
+npm install 
+
+## PASO 3 
+
+ejecutar TEST cons JEST 
+
+npm run test

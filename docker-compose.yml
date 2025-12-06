@@ -1,14 +1,15 @@
 version: "3.9"
 
-env_file:
-  - .env
-
+#env_file:
+#  - .env
 services:
   rest-api:
     image: noemirous/proyecto_grupo1_delivery:1.0.0
     container_name: rest-api
     ports:
       - "${PORT}:${PORT}"
+    env_file:
+      - .env
     environment:
       - PORT=${PORT}
       - DB_HOST=${DB_HOST}
@@ -27,6 +28,8 @@ services:
     container_name: db-server
     ports:
       - "${DB_PORT}:5432"
+    env_file:
+      - .env
     environment:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}

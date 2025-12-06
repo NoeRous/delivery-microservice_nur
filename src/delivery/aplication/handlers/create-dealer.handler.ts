@@ -1,9 +1,9 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { v4 as uuidv4 } from 'uuid';
-import { CellPhone } from "src/delivery/domain/value-objects/cell-phone.vo";
-import { Dealer } from "src/delivery/domain/entities/dealer.entity";
+import { CellPhone } from "../../domain/value-objects/cell-phone.vo";
+import { Dealer } from "../../domain/entities/dealer.entity";
 import { Inject } from "@nestjs/common";
-import type { DealerRepository } from "src/delivery/domain/repositories/dealer.repository.interface";
+import type { DealerRepository } from "../../domain/repositories/dealer.repository.interface";
 import { CreateDealerCommand } from "../commands/create-dealer.command";
 
 
