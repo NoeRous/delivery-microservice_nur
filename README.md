@@ -123,16 +123,3 @@ npm run test:contracts:provider
 
 Nota: la verificación del provider asume que las rutas expuestas por el servicio coinciden con las interacciones definidas (si usas rutas diferentes ajusta las pruebas en `src/contracts/`).
 
-Publicar el repositorio:
-
-- Para entregar la actividad sube el contenido del repositorio a tu cuenta de GitHub y comparte el enlace. Por ejemplo:
-
-```powershell
-git init
-git add .
-git commit -m "Add Pact contract tests"
-git remote add origin https://github.com/<tu-usuario>/delivery-microservice_nur.git
-git push -u origin main
-```
-
-Si quieres, puedo ayudarte a preparar el repositorio remoto y los pasos finales.
