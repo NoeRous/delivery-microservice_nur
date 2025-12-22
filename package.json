@@ -18,7 +18,10 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "seed": "ts-node src/delivery/infrastructure/database/run-seed.ts"
+    "seed": "ts-node src/delivery/infrastructure/database/run-seed.ts",
+    "test:contracts:consumer": "jest --testPathPatterns=contracts/consumer.pact.spec.ts --runInBand",
+    "test:contracts:provider": "jest --testPathPatterns=contracts/provider.pact.spec.ts --runInBand",
+    "test:contracts": "npm run test:contracts:consumer && npm run test:contracts:provider"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -59,8 +62,11 @@
     "tsconfig-paths": "^4.2.0",
     "typeorm-extension": "^3.7.1",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.20.0"
+    "typescript-eslint": "^8.20.0",
+    "@pact-foundation/pact": "^12.2.0",
+    "axios": "^1.4.0"
   },
+  
   "jest": {
     "moduleFileExtensions": [
       "js",

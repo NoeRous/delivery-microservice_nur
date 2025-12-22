@@ -86,3 +86,53 @@ npm install
 ejecutar TEST cons JEST 
 
 npm run test
+
+
+## Contract Testing (Pact)
+
+Se añadieron pruebas de contrato usando Pact para demostrar la interacción entre un consumidor (`delivery-consumer`) y el proveedor (`delivery-provider`).
+
+- Los pacts generados se almacenan en la carpeta `pacts/` en la raíz del proyecto.
+- Se incluyeron dos interacciones desde el consumidor:
+	- Crear paquete (`POST /packages`)
+	- Asignar paquete a dealer (`POST /packages/assign`)
+
+Cómo ejecutar las pruebas de contrato:
+
+1. Instalar dependencias:
+
+```powershell
+npm install
+```
+
+2. Ejecutar las pruebas consumidor (crea los pact files en `pacts/`):
+
+```powershell
+npm run test:contracts:consumer
+```
+
+3. Verificar los pacts contra el provider (el provider debe estar corriendo en `http://localhost:3000`):
+
+```powershell
+# En otra terminal, levantar el provider (application Nest)
+npm run start:dev
+
+# Luego ejecutar la verificación (lee el pact generado en `pacts/`)
+npm run test:contracts:provider
+```
+
+Nota: la verificación del provider asume que las rutas expuestas por el servicio coinciden con las interacciones definidas (si usas rutas diferentes ajusta las pruebas en `src/contracts/`).
+
+Publicar el repositorio:
+
+- Para entregar la actividad sube el contenido del repositorio a tu cuenta de GitHub y comparte el enlace. Por ejemplo:
+
+```powershell
+git init
+git add .
+git commit -m "Add Pact contract tests"
+git remote add origin https://github.com/<tu-usuario>/delivery-microservice_nur.git
+git push -u origin main
+```
+
+Si quieres, puedo ayudarte a preparar el repositorio remoto y los pasos finales.
