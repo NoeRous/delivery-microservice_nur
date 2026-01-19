@@ -1,11 +1,11 @@
 import { Inject } from "@nestjs/common";
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import type { PackageRepository } from "src/delivery/domain/repositories/package.repository.interface";
+import type { PackageRepository } from "../../domain/repositories/package.repository.interface";
 import { AssingPackageToDealerCommand } from "../commands/assign-package-to-dealer.command";
-import type { DealerRepository } from "src/delivery/domain/repositories/dealer.repository.interface";
-import type { DeliveryRouteRepository } from "src/delivery/domain/repositories/delivery-route.repository.interface";
+import type { DealerRepository } from "../../domain/repositories/dealer.repository.interface";
+import type { DeliveryRouteRepository } from "../../domain/repositories/delivery-route.repository.interface";
 import { v4 as uuidv4 } from 'uuid';
-import { DeliveryRoute } from "src/delivery/domain/entities/delivery-route.entity";
+import { DeliveryRoute } from "../../domain/entities/delivery-route.entity";
 
 @CommandHandler(AssingPackageToDealerCommand)
 export class AssignPackageToDealerHandler implements ICommandHandler<AssingPackageToDealerCommand> {

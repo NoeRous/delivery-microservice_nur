@@ -1,9 +1,9 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { CreateRouteWithPackagesCommand } from "../commands/create-route-with-packages.command";
-import type { UnitOfWorkRepository } from "src/delivery/domain/repositories/unit-of-work.interface";
-import { DeliveryRoute } from "src/delivery/domain/entities/delivery-route.entity";
-import { Package } from "src/delivery/domain/entities/package.entity";
-import { Address } from "src/delivery/domain/value-objects/address.vo";
+import type { UnitOfWorkRepository } from "../../domain/repositories/unit-of-work.interface";
+import { DeliveryRoute } from "../../domain/entities/delivery-route.entity";
+import { Package } from "../../domain/entities/package.entity";
+import { Address } from "../../domain/value-objects/address.vo";
 
 import { Inject } from '@nestjs/common';
 
