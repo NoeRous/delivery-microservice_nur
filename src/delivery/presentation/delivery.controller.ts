@@ -1,7 +1,6 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Inject, Logger, OnModuleInit } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { MessagePattern, Payload } from '@nestjs/microservices';
-import { Logger } from '@nestjs/common';
+import { ClientKafka, MessagePattern, Payload } from '@nestjs/microservices';
 
 import { AssingPackageToDealerCommand } from '../aplication/commands/assign-package-to-dealer.command';
 import { CreateDealerCommand } from '../aplication/commands/create-dealer.command';
@@ -12,95 +11,127 @@ import { TransitPackageCommand } from '../aplication/commands/transit-package.co
 import { CreateDealerDto } from './dto/create-dealer.dto';
 
 @Controller()
-export class DeliveryController {
-    private readonly logger = new Logger(DeliveryController.name);
+export class DeliveryController implements OnModuleInit {
+  private readonly logger = new Logger(DeliveryController.name);
 
-    constructor(private readonly commandBus: CommandBus) {}
+  constructor(
+    @Inject('KAFKA_SERVICE')
+    private readonly kafkaClient: ClientKafka,
+    private readonly commandBus: CommandBus,
+  ) {}
 
+  async onModuleInit() {
+    await this.kafkaClient.connect();
+    this.logger.log('Kafka Client Connected');
+  }
+
+  // =========================
   // CREAR REPARTIDOR
-    @MessagePattern('create_dealer')
-    async createDealer(@Payload() body: CreateDealerDto) {
-        console.log('Mensaje recibido:', body);
-        const command = new CreateDealerCommand(
-        body.identityCard,
-        body.firstName,
-        body.lastName,
-        body.cellPhone,
-        );
+  // =========================
+  @MessagePattern('create_dealer')
+  async createDealer(@Payload() body: CreateDealerDto) {
+    this.logger.log(`Mensaje recibido create_dealer: ${JSON.stringify(body)}`);
 
-        const dealer = await this.commandBus.execute(command);
-        return { message: 'Dealer created successfully', dealer };
-    }
+    const command = new CreateDealerCommand(
+      body.identityCard,
+      body.firstName,
+      body.lastName,
+      body.cellPhone,
+    );
 
-    // ASIGNAR PAQUETE
-    @MessagePattern('assign_package')
-    async assignPackage(@Payload() body: any) {
-        const command = new AssingPackageToDealerCommand(
-        body.packageId,
-        body.dealerId,
-        new Date(),
-        );
+    const dealer = await this.commandBus.execute(command);
 
-        await this.commandBus.execute(command);
+    return {
+      message: 'Dealer created successfully',
+      dealer,
+    };
+  }
 
-        return { message: 'Package asignado correctamente' };
-    }
+  // =========================
+  // ASIGNAR PAQUETE
+  // =========================
+  @MessagePattern('assign_package')
+  async assignPackage(@Payload() body: any) {
+    this.logger.log(`Mensaje recibido assign_package: ${JSON.stringify(body)}`);
 
-    // ENTREGAR PAQUETE
-    @MessagePattern('deliver_package')
-    async markAsDelivered(@Payload() id: string) {
-        await this.commandBus.execute(new DeliverPackageCommand(id));
+    const command = new AssingPackageToDealerCommand(
+      body.packageId,
+      body.dealerId,
+      new Date(),
+    );
 
-        return {
-        status: true,
-        message: `Paquete ${id} marcado como entregado.`,
-        };
-    }
+    await this.commandBus.execute(command);
 
-    // MARCAR EN CAMINO
-    @MessagePattern('transit_package')
-    async markAsTransit(@Payload() id: string) {
-        await this.commandBus.execute(new TransitPackageCommand(id));
+    return { message: 'Package asignado correctamente' };
+  }
 
-        return {
-        status: true,
-        message: `Paquete ${id} marcado como en camino.`,
-        };
-    }
+  // =========================
+  // ENTREGAR PAQUETE
+  // =========================
+  @MessagePattern('deliver_package')
+  async markAsDelivered(@Payload() id: string) {
+    this.logger.log(`Mensaje recibido deliver_package: ${id}`);
 
-    // CREAR PAQUETE
-    @MessagePattern('create_package')
-    async createPackage(@Payload() body: any) {
-        await this.commandBus.execute(
-        new CreatePackageCommand(
-            body.patientId,
-            new Date(body.deliveryDate),
-            body.addressStreet,
-            body.addressCity,
-            body.lat,
-            body.lng,
-            body.deliveryRouteId,
-        ),
-        );
+    await this.commandBus.execute(new DeliverPackageCommand(id));
 
-        return { message: 'Paquete creado correctamente' };
-    }
+    return {
+      status: true,
+      message: `Paquete ${id} marcado como entregado.`,
+    };
+  }
 
-    // ASIGNAR RUTA
-    @MessagePattern('assign_packages_route')
-    async assignPackagesRoute(@Payload() body: any) {
-        const command = new CreateRouteWithPackagesCommand(
-        body.deliveryId,
-        body.deliveryDate,
-        body.packages,
-        );
+  // =========================
+  // MARCAR EN CAMINO
+  // =========================
+  @MessagePattern('transit_package')
+  async markAsTransit(@Payload() id: string) {
+    this.logger.log(`Mensaje recibido transit_package: ${id}`);
 
-        return this.commandBus.execute(command);
-    }
+    await this.commandBus.execute(new TransitPackageCommand(id));
 
-    @MessagePattern()
-    async handleUnknownMessage(@Payload() data: any) {
-        this.logger.warn(`Mensaje recibido sin manejador: ${JSON.stringify(data)}`);
-        return { error: 'No handler found for this message' };
-    }
+    return {
+      status: true,
+      message: `Paquete ${id} marcado como en camino.`,
+    };
+  }
+
+  // =========================
+  // CREAR PAQUETE
+  // =========================
+  @MessagePattern('create_package')
+  async createPackage(@Payload() body: any) {
+    this.logger.log(`Mensaje recibido create_package: ${JSON.stringify(body)}`);
+
+    await this.commandBus.execute(
+      new CreatePackageCommand(
+        body.patientId,
+        new Date(body.deliveryDate),
+        body.addressStreet,
+        body.addressCity,
+        body.lat,
+        body.lng,
+        body.deliveryRouteId,
+      ),
+    );
+
+    return { message: 'Paquete creado correctamente' };
+  }
+
+  // =========================
+  // ASIGNAR RUTA
+  // =========================
+  @MessagePattern('assign_packages_route')
+  async assignPackagesRoute(@Payload() body: any) {
+    this.logger.log(
+      `Mensaje recibido assign_packages_route: ${JSON.stringify(body)}`,
+    );
+
+    const command = new CreateRouteWithPackagesCommand(
+      body.deliveryId,
+      body.deliveryDate,
+      body.packages,
+    );
+
+    return this.commandBus.execute(command);
+  }
 }
