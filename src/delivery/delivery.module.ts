@@ -24,6 +24,10 @@ import { DealerTypeOrmRepositoryImpl } from './infrastructure/repositories/deale
 import { PackageTypeOrmRepositoryImpl } from './infrastructure/repositories/package.repository';
 import { DeliveryRouteTypeOrmRepositoryImpl } from './infrastructure/repositories/delivery-route.repository';
 import { UnitOfWorkRepositoryImpl } from './infrastructure/repositories/unit-of-work.repository';
+import { PatientController } from './presentation/patient.controller';
+import { PatientTypeOrmRepositoryImpl } from './infrastructure/repositories/patient.repository';
+import { CreatePatientCommand } from './aplication/commands/create-patient.command';
+import { CreatePatientHandler } from './aplication/handlers/create-patient.handler';
 
 @Module({
   imports: [
@@ -57,7 +61,7 @@ import { UnitOfWorkRepositoryImpl } from './infrastructure/repositories/unit-of-
     ]),
   ],
 
-  controllers: [DeliveryController],
+  controllers: [DeliveryController, PatientController],
 
   providers: [
     AssignPackageToDealerHandler,
@@ -66,6 +70,8 @@ import { UnitOfWorkRepositoryImpl } from './infrastructure/repositories/unit-of-
     CreatePackageHandler,
     CreateRouteWithPackagesHandler,
     TransitPackageHandler,
+    CreatePatientCommand,
+    CreatePatientHandler,
 
     { provide: 'DealerRepository', useClass: DealerTypeOrmRepositoryImpl },
     { provide: 'PackageRepository', useClass: PackageTypeOrmRepositoryImpl },
@@ -74,6 +80,7 @@ import { UnitOfWorkRepositoryImpl } from './infrastructure/repositories/unit-of-
       useClass: DeliveryRouteTypeOrmRepositoryImpl,
     },
     { provide: 'UnitOfWorkRepository', useClass: UnitOfWorkRepositoryImpl },
+    { provide: 'PatientRepository', useClass: PatientTypeOrmRepositoryImpl },
   ],
 })
 export class DeliveryModule {}

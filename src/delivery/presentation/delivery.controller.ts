@@ -1,6 +1,6 @@
 import { Controller, Inject, Logger, OnModuleInit } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { ClientKafka, MessagePattern, Payload } from '@nestjs/microservices';
+import { ClientKafka, EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 
 import { AssingPackageToDealerCommand } from '../aplication/commands/assign-package-to-dealer.command';
 import { CreateDealerCommand } from '../aplication/commands/create-dealer.command';
@@ -134,4 +134,9 @@ export class DeliveryController implements OnModuleInit {
 
     return this.commandBus.execute(command);
   }
+
+  // @EventPattern('patient.created')
+  // async handlePatientCreated(@Payload() data: any) {
+  //   console.log('Delivery reaccionó al evento:', data);
+  // }
 }
