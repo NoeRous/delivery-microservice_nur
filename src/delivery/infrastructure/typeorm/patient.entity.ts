@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { AddressEntity } from "./address.entity";
 
 @Entity('patients')
 export class PatientEntity {
@@ -16,4 +17,7 @@ export class PatientEntity {
 
     @Column({ name: "cell_phone" })
     cellPhone: number;
+
+    @OneToMany(() => AddressEntity, (address) => address.patient)
+    addresses: AddressEntity[];
 }

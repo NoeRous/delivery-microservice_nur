@@ -135,8 +135,4 @@ export class DeliveryController implements OnModuleInit {
     return this.commandBus.execute(command);
   }
 
-  // @EventPattern('patient.created')
-  // async handlePatientCreated(@Payload() data: any) {
-  //   console.log('Delivery reaccionó al evento:', data);
-  // }
 }

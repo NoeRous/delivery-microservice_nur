@@ -28,6 +28,9 @@ import { PatientController } from './presentation/patient.controller';
 import { PatientTypeOrmRepositoryImpl } from './infrastructure/repositories/patient.repository';
 import { CreatePatientCommand } from './aplication/commands/create-patient.command';
 import { CreatePatientHandler } from './aplication/handlers/create-patient.handler';
+import { AddressController } from './presentation/address.controller';
+import { DeliveryScheduleController } from './presentation/delivery-schedule.controller';
+import { PackageController } from './presentation/package.controller';
 
 @Module({
   imports: [
@@ -56,12 +59,15 @@ import { CreatePatientHandler } from './aplication/handlers/create-patient.handl
           run: {
             autoCommit: true,
           },
+          producer: {
+            allowAutoTopicCreation: true,
+          },
         },
       },
     ]),
   ],
 
-  controllers: [DeliveryController, PatientController],
+  controllers: [DeliveryController, PatientController,AddressController,DeliveryScheduleController, PackageController],
 
   providers: [
     AssignPackageToDealerHandler,
