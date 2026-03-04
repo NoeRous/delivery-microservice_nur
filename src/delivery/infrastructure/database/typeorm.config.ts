@@ -10,6 +10,7 @@ import { DeliveryRouteEntity } from '../typeorm/delivery_routes.entity';
 import { PackageEntity } from '../typeorm/package.entity';
 import { AddressEntity } from '../typeorm/address.entity';
 import { DeliveryScheduleEntity } from '../typeorm/delivery-schedule.entity';
+import { OutboxEntity } from '../typeorm/outbox.entity';
 
 // Valores con fallback para TS seguro
 const DB_HOST = process.env.DB_HOST || "localhost";
@@ -25,7 +26,7 @@ export const ormConfig: DataSourceOptions & SeederOptions = {
   username: DB_USER,
   password: DB_PASS,
   database: DB_NAME,
-  entities: [PatientEntity,DealerEntity,DeliveryRouteEntity,PackageEntity,AddressEntity,DeliveryScheduleEntity],
+  entities: [PatientEntity,DealerEntity,DeliveryRouteEntity,PackageEntity,AddressEntity,DeliveryScheduleEntity,OutboxEntity],
   synchronize: true, 
   migrationsRun: false,
   logging: true,
