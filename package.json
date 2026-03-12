@@ -21,7 +21,8 @@
     "seed": "ts-node src/delivery/infrastructure/database/run-seed.ts",
     "test:contracts:consumer": "jest --testPathPatterns=contracts/consumer.pact.spec.ts --runInBand",
     "test:contracts:provider": "jest --testPathPatterns=contracts/provider.pact.spec.ts --runInBand",
-    "test:contracts": "npm run test:contracts:consumer && npm run test:contracts:provider"
+    "test:contracts": "npm run test:contracts:consumer && npm run test:contracts:provider",
+    "prepare": "husky"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -59,6 +60,7 @@
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.2",
     "globals": "^16.0.0",
+    "husky": "^9.1.7",
     "jest": "^30.0.0",
     "prettier": "^3.4.2",
     "source-map-support": "^0.5.21",
