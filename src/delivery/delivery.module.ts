@@ -33,60 +33,72 @@ import { DeliveryScheduleController } from './presentation/delivery-schedule.con
 import { PackageController } from './presentation/package.controller';
 
 @Module({
-  imports: [
-    CqrsModule,
-    TypeOrmModule.forFeature([
-      PackageEntity,
-      DeliveryRouteEntity,
-      DealerEntity,
-      PatientEntity,
-    ]),
+	imports: [
+		CqrsModule,
+		TypeOrmModule.forFeature([
+			PackageEntity,
+			DeliveryRouteEntity,
+			DealerEntity,
+			PatientEntity,
+		]),
 
-    ClientsModule.register([
-      {
-        name: 'KAFKA_SERVICE',
-        transport: Transport.KAFKA,
-        options: {
-          client: {
-            brokers: ['localhost:9092'], // 👈 fijo
-          },
-          consumer: {
-            groupId: 'delivery-group',
-          },
-          subscribe: {
-            fromBeginning: true,
-          },
-          run: {
-            autoCommit: true,
-          },
-          producer: {
-            allowAutoTopicCreation: true,
-          },
-        },
-      },
-    ]),
-  ],
+		ClientsModule.register([
+			{
+				name: 'KAFKA_SERVICE',
+				transport: Transport.KAFKA,
+				options: {
+					client: {
+						brokers: ['localhost:9092'], // 👈 fijo
+					},
+					consumer: {
+						groupId: 'delivery-group',
+					},
+					subscribe: {
+						fromBeginning: true,
+					},
+					run: {
+						autoCommit: true,
+					},
+					producer: {
+						allowAutoTopicCreation: true,
+					},
+				},
+			},
+		]),
+	],
 
-  controllers: [DeliveryController, PatientController,AddressController,DeliveryScheduleController, PackageController],
+	controllers: [
+		DeliveryController,
+		PatientController,
+		AddressController,
+		DeliveryScheduleController,
+		PackageController,
+	],
 
-  providers: [
-    AssignPackageToDealerHandler,
-    CreateDealerHandler,
-    DeliverPackageHandler,
-    CreatePackageHandler,
-    CreateRouteWithPackagesHandler,
-    TransitPackageHandler,
-    CreatePatientCommand,
-    CreatePatientHandler,
+	providers: [
+		AssignPackageToDealerHandler,
+		CreateDealerHandler,
+		DeliverPackageHandler,
+		CreatePackageHandler,
+		CreateRouteWithPackagesHandler,
+		TransitPackageHandler,
+		CreatePatientCommand,
+		CreatePatientHandler,
 
-    { provide: 'DealerRepository', useClass: DealerTypeOrmRepositoryImpl },
-    { provide: 'PackageRepository', useClass: PackageTypeOrmRepositoryImpl },
-    {
-      provide: 'DeliveryRouteRepository',
-      useClass: DeliveryRouteTypeOrmRepositoryImpl,
-    },
-    { provide: 'UnitOfWorkRepository', useClass: UnitOfWorkRepositoryImpl },
-    { provide: 'PatientRepository', useClass: PatientTypeOrmRepositoryImpl },
-  ],
+		{ provide: 'DealerRepository', useClass: DealerTypeOrmRepositoryImpl },
+		{
+			provide: 'PackageRepository',
+			useClass: PackageTypeOrmRepositoryImpl,
+		},
+		{
+			provide: 'DeliveryRouteRepository',
+			useClass: DeliveryRouteTypeOrmRepositoryImpl,
+		},
+		{ provide: 'UnitOfWorkRepository', useClass: UnitOfWorkRepositoryImpl },
+		{
+			provide: 'PatientRepository',
+			useClass: PatientTypeOrmRepositoryImpl,
+		},
+	],
 })
 export class DeliveryModule {}

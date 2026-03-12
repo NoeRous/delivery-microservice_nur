@@ -7,22 +7,29 @@ import type { PackageRepository } from '../../domain/repositories/package.reposi
 import { Address } from '../../domain/value-objects/address.vo';
 
 @CommandHandler(CreatePackageCommand)
-export class CreatePackageHandler implements ICommandHandler<CreatePackageCommand> {
-  constructor(
-    @Inject('PackageRepository') private readonly packageRepo: PackageRepository
-  ) {}
+export class CreatePackageHandler
+	implements ICommandHandler<CreatePackageCommand>
+{
+	constructor(
+		@Inject('PackageRepository')
+		private readonly packageRepo: PackageRepository,
+	) {}
 
-  async execute(command: CreatePackageCommand): Promise<void> {
-    
-    const address = new Address(command.addressStreet, command.addressCity, command.lat, command.lng);
-    const pkg = new Package(
-      uuidv4(),
-      command.patientId,
-      command.deliveryDate,
-      address,
-      command.deliveryRouteId
-    );
+	async execute(command: CreatePackageCommand): Promise<void> {
+		const address = new Address(
+			command.addressStreet,
+			command.addressCity,
+			command.lat,
+			command.lng,
+		);
+		const pkg = new Package(
+			uuidv4(),
+			command.patientId,
+			command.deliveryDate,
+			address,
+			command.deliveryRouteId,
+		);
 
-    await this.packageRepo.save(pkg);
-  }
+		await this.packageRepo.save(pkg);
+	}
 }

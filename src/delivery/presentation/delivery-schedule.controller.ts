@@ -1,68 +1,69 @@
 import { Controller, Inject, Logger, OnModuleInit } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { ClientKafka, EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
+import {
+	ClientKafka,
+	EventPattern,
+	MessagePattern,
+	Payload,
+} from '@nestjs/microservices';
 
 @Controller()
 export class DeliveryScheduleController implements OnModuleInit {
+	public readonly logger = new Logger(DeliveryScheduleController.name);
 
-    public readonly logger = new Logger(DeliveryScheduleController.name);
+	constructor(
+		private readonly commandBus: CommandBus,
+		@Inject('KAFKA_SERVICE') private readonly client: ClientKafka,
+	) {}
 
-    constructor(
-        private readonly commandBus: CommandBus,
-        @Inject('KAFKA_SERVICE') private readonly client: ClientKafka, 
-    ) {}
+	async onModuleInit() {
+		await this.client.connect();
+	}
 
-    async onModuleInit() {
-        await this.client.connect();
-    }
+	@MessagePattern('create_schedule_patient')
+	async createSchedulePatient(@Payload() body: any) {
+		this.logger.log('Mensaje recibido de crear calendario de paciente');
 
-    @MessagePattern('create_schedule_patient')
-    async createSchedulePatient(@Payload() body: any) {
-        this.logger.log('Mensaje recibido de crear calendario de paciente');
+		return {
+			message: 'Create schedule patient successfully',
+		};
+	}
 
-        return {
-        message: 'Create schedule patient successfully',
-        };
-    }
+	@MessagePattern('get_confirmed_deliveries_by_date')
+	async deliveryConfirm(@Payload() date: string) {
+		this.logger.log(`Listing confirmed deliveries for ${date}`);
 
-    @MessagePattern('get_confirmed_deliveries_by_date')
-    async deliveryConfirm(@Payload() date: string) {
+		const confirmedDeliveries = [
+			{
+				deliveryId: 'DEL-001',
+				patientName: 'John Doe',
+				status: 'CONFIRMED',
+			},
+			{
+				deliveryId: 'DEL-002',
+				patientName: 'Jane Smith',
+				status: 'CONFIRMED',
+			},
+		];
 
-    this.logger.log(`Listing confirmed deliveries for ${date}`);
+		const response = {
+			message: 'Confirmed deliveries listed successfully',
+			date,
+		};
 
-    const confirmedDeliveries = [
-        {
-        deliveryId: 'DEL-001',
-        patientName: 'John Doe',
-        status: 'CONFIRMED',
-        },
-        {
-        deliveryId: 'DEL-002',
-        patientName: 'Jane Smith',
-        status: 'CONFIRMED',
-        },
-    ];
+		this.client.emit('confirmed_deliveries_listed', {
+			eventName: 'ConfirmedDeliveriesListed',
+			eventDate: new Date(),
+			data: confirmedDeliveries,
+		});
 
-    const response = {
-        message: 'Confirmed deliveries listed successfully',
-        date,
-    };
+		return response;
+	}
 
-    this.client.emit('confirmed_deliveries_listed', {
-        eventName: 'ConfirmedDeliveriesListed',
-        eventDate: new Date(),
-        data: confirmedDeliveries,
-    });
+	@EventPattern('confirmed_deliveries_listed')
+	handleConfirmedDeliveriesListed(@Payload() message: any) {
+		this.logger.log('Confirmed deliveries event received');
 
-    return response;
-    }
-
-    @EventPattern('confirmed_deliveries_listed')
-    handleConfirmedDeliveriesListed(@Payload() message: any) {
-
-        this.logger.log('Confirmed deliveries event received');
-
-        console.log('Event payload:', message);
-        
-    }
+		console.log('Event payload:', message);
+	}
 }

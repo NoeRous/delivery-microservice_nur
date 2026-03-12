@@ -8,30 +8,28 @@ import { PatientRepository } from 'src/delivery/domain/repositories/patient.repo
 
 @Injectable()
 export class PatientTypeOrmRepositoryImpl implements PatientRepository {
-  constructor(
-    @InjectRepository(PatientEntity)
-    private readonly ormRepo: Repository<PatientEntity>,
-  ) { }
+	constructor(
+		@InjectRepository(PatientEntity)
+		private readonly ormRepo: Repository<PatientEntity>,
+	) {}
 
-  async findById(id: string): Promise<Patient | null> {
-    const entity = await this.ormRepo.findOne({ where: { id } });
-    return entity ? Patient.fromEntity(entity) : null;
-  }
+	async findById(id: string): Promise<Patient | null> {
+		const entity = await this.ormRepo.findOne({ where: { id } });
+		return entity ? Patient.fromEntity(entity) : null;
+	}
 
-  async findByIdentityCard(identityCard: string): Promise<Patient | null> {
-    const entity = await this.ormRepo.findOne({ where: { identityCard } });
-    return entity ? Patient.fromEntity(entity) : null;
-  }
+	async findByIdentityCard(identityCard: string): Promise<Patient | null> {
+		const entity = await this.ormRepo.findOne({ where: { identityCard } });
+		return entity ? Patient.fromEntity(entity) : null;
+	}
 
-  async findByCellPhone(cellPhone: number): Promise<Patient | null> {
-    const entity = await this.ormRepo.findOne({ where: { cellPhone } });
-    return entity ? Patient.fromEntity(entity) : null;
-  }
+	async findByCellPhone(cellPhone: number): Promise<Patient | null> {
+		const entity = await this.ormRepo.findOne({ where: { cellPhone } });
+		return entity ? Patient.fromEntity(entity) : null;
+	}
 
-  async save(patient: Patient): Promise<any> {
-    const entity = this.ormRepo.create(patient.toPersistence());
-    return await this.ormRepo.save(entity);
-  }
-
-
+	async save(patient: Patient): Promise<any> {
+		const entity = this.ormRepo.create(patient.toPersistence());
+		return await this.ormRepo.save(entity);
+	}
 }

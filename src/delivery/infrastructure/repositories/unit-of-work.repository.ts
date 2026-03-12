@@ -12,38 +12,40 @@ import { DeliveryRouteEntity } from '../typeorm/delivery_routes.entity';
 
 @Injectable()
 export class UnitOfWorkRepositoryImpl implements UnitOfWorkRepository {
-  private queryRunner: QueryRunner;
+	private queryRunner: QueryRunner;
 
-  packageRepository: PackageTypeOrmRepositoryImpl;
-  dealerRepository: DealerTypeOrmRepositoryImpl;
-  deliveryRouteRepository: DeliveryRouteTypeOrmRepositoryImpl;
+	packageRepository: PackageTypeOrmRepositoryImpl;
+	dealerRepository: DealerTypeOrmRepositoryImpl;
+	deliveryRouteRepository: DeliveryRouteTypeOrmRepositoryImpl;
 
-  constructor(private readonly dataSource: DataSource) {}
+	constructor(private readonly dataSource: DataSource) {}
 
-  async start(): Promise<void> {
-    this.queryRunner = this.dataSource.createQueryRunner();
-    await this.queryRunner.startTransaction();
+	async start(): Promise<void> {
+		this.queryRunner = this.dataSource.createQueryRunner();
+		await this.queryRunner.startTransaction();
 
-    const manager = this.queryRunner.manager;
+		const manager = this.queryRunner.manager;
 
-    
-    this.packageRepository =
-      new PackageTypeOrmRepositoryImpl(manager.getRepository(PackageEntity));
+		this.packageRepository = new PackageTypeOrmRepositoryImpl(
+			manager.getRepository(PackageEntity),
+		);
 
-    this.dealerRepository =
-      new DealerTypeOrmRepositoryImpl(manager.getRepository(DealerEntity));
+		this.dealerRepository = new DealerTypeOrmRepositoryImpl(
+			manager.getRepository(DealerEntity),
+		);
 
-    this.deliveryRouteRepository =
-      new DeliveryRouteTypeOrmRepositoryImpl(manager.getRepository(DeliveryRouteEntity));
-  }
+		this.deliveryRouteRepository = new DeliveryRouteTypeOrmRepositoryImpl(
+			manager.getRepository(DeliveryRouteEntity),
+		);
+	}
 
-  async complete(): Promise<void> {
-    await this.queryRunner.commitTransaction();
-    await this.queryRunner.release();
-  }
+	async complete(): Promise<void> {
+		await this.queryRunner.commitTransaction();
+		await this.queryRunner.release();
+	}
 
-  async rollback(): Promise<void> {
-    await this.queryRunner.rollbackTransaction();
-    await this.queryRunner.release();
-  }
+	async rollback(): Promise<void> {
+		await this.queryRunner.rollbackTransaction();
+		await this.queryRunner.release();
+	}
 }

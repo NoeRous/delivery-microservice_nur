@@ -7,31 +7,29 @@ import { DealerEntity } from '../typeorm/dealer.entity';
 
 @Injectable()
 export class DealerTypeOrmRepositoryImpl implements DealerRepository {
-  constructor(
-    @InjectRepository(DealerEntity)
-    private readonly ormRepo: Repository<DealerEntity>,
-  ) { }
+	constructor(
+		@InjectRepository(DealerEntity)
+		private readonly ormRepo: Repository<DealerEntity>,
+	) {}
 
-  async findById(id: string): Promise<Dealer | null> {
-    const entity = await this.ormRepo.findOne({ where: { id } });
-    return entity ? Dealer.fromEntity(entity) : null;
-  }
+	async findById(id: string): Promise<Dealer | null> {
+		const entity = await this.ormRepo.findOne({ where: { id } });
+		return entity ? Dealer.fromEntity(entity) : null;
+	}
 
-  async findByIdentityCard(identityCard: string): Promise<Dealer | null> {
-    const entity = await this.ormRepo.findOne({ where: { identityCard } });
-    return entity ? Dealer.fromEntity(entity) : null;
-  }
+	async findByIdentityCard(identityCard: string): Promise<Dealer | null> {
+		const entity = await this.ormRepo.findOne({ where: { identityCard } });
+		return entity ? Dealer.fromEntity(entity) : null;
+	}
 
-  async findByCellPhone(cellPhone: number): Promise<Dealer | null> {
-    const entity = await this.ormRepo.findOne({ where: { cellPhone } });
-    return entity ? Dealer.fromEntity(entity) : null;
-  }
+	async findByCellPhone(cellPhone: number): Promise<Dealer | null> {
+		const entity = await this.ormRepo.findOne({ where: { cellPhone } });
+		return entity ? Dealer.fromEntity(entity) : null;
+	}
 
-  async save(dealer: Dealer): Promise<void> {
-const entity = this.ormRepo.create(dealer.toPersistence());
+	async save(dealer: Dealer): Promise<void> {
+		const entity = this.ormRepo.create(dealer.toPersistence());
 
-  await this.ormRepo.save(entity);
-}
-
-
+		await this.ormRepo.save(entity);
+	}
 }

@@ -4,16 +4,16 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 
 @Controller()
 export class AddressController {
-  public readonly logger = new Logger(AddressController.name);
+	public readonly logger = new Logger(AddressController.name);
 
-  constructor(private readonly commandBus: CommandBus) {}
+	constructor(private readonly commandBus: CommandBus) {}
 
-  @MessagePattern('create_address_patient')
-  async createAddressPatient(@Payload() body: any) {
-    this.logger.log('Mensaje recibido de crear direccion de paciente');
+	@MessagePattern('create_address_patient')
+	async createAddressPatient(@Payload() body: any) {
+		this.logger.log('Mensaje recibido de crear direccion de paciente');
 
-    return {
-      message: 'Create address patient successfully',
-    };
-  }
+		return {
+			message: 'Create address patient successfully',
+		};
+	}
 }
