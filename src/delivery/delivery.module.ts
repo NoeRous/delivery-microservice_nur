@@ -42,30 +42,30 @@ import { PackageController } from './presentation/package.controller';
 			PatientEntity,
 		]),
 
-		ClientsModule.register([
-			{
-				name: 'KAFKA_SERVICE',
-				transport: Transport.KAFKA,
-				options: {
-					client: {
-						brokers: ['localhost:9092'], // 👈 fijo
-					},
-					consumer: {
-						groupId: 'delivery-group',
-					},
-					subscribe: {
-						fromBeginning: true,
-					},
-					run: {
-						autoCommit: true,
-					},
-					producer: {
-						allowAutoTopicCreation: true,
-					},
-				},
-			},
-		]),
-	],
+    ClientsModule.register([
+      {
+        name: 'KAFKA_SERVICE',
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+            brokers: ['kafka:9092'], // 👈 fijo
+          },
+          consumer: {
+            groupId: 'delivery-group',
+          },
+          subscribe: {
+            fromBeginning: true,
+          },
+          run: {
+            autoCommit: true,
+          },
+          producer: {
+            allowAutoTopicCreation: true,
+          },
+        },
+      },
+    ]),
+  ],
 
 	controllers: [
 		DeliveryController,

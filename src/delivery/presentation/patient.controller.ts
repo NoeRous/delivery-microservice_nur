@@ -18,28 +18,28 @@ export class PatientController implements OnModuleInit {
 		await this.kafkaClient.connect();
 	}
 
-	@EventPattern('patient.created')
-	async createPatient(@Payload() message: any) {
-		try {
-			console.log('MENSAJE RAW:', JSON.stringify(message));
+  @EventPattern('outbox.event.Advice')
+  async createPatient(@Payload() event: any) {
+    try {
+      const firstParse = JSON.parse(event);
+      const data =
+        typeof firstParse === 'string'
+          ? JSON.parse(firstParse)
+          : firstParse;
 
-			const data = message.value ?? message;
+      const command = new CreatePatientCommand(
+        data.id,
+        data.identityCard,
+        data.fullName,
+        data.lastName,
+        data.cellPhone,
+      );
 
-			console.log('DATA:', data);
+      await this.commandBus.execute(command);
 
-			const command = new CreatePatientCommand(
-				data.patient.id,
-				data.patient.identityCard,
-				data.patient.fullName,
-				data.patient.lastName,
-				data.patient.cellPhone,
-			);
-
-			const result = await this.commandBus.execute(command);
-
-			console.log('COMANDO EJECUTADO OK', result);
-		} catch (error) {
-			console.error('ERROR REAL ===>', error);
-		}
-	}
+    } catch (error) {
+      console.error('ERROR REAL ===>', error);
+    }
+  }
 }
+
