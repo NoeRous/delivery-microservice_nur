@@ -55,7 +55,7 @@ No incluye frontend; expone una API REST para ser consumida por otros servicios 
 
 
 
-# LEVANTAR PROYECTO CON DOCKER 
+# LEVANTAR PROYECTO CON DOCKER ---modificado
 
 ## PASO 1 
 
