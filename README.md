@@ -123,5 +123,5 @@ npm run test:contracts:provider
 
 Nota: la verificación del provider asume que las rutas expuestas por el servicio coinciden con las interacciones definidas (si usas rutas diferentes ajusta las pruebas en `src/contracts/`).
 
-by noemi
+by noemi:-*
 
