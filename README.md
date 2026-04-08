@@ -55,7 +55,7 @@ No incluye frontend; expone una API REST para ser consumida por otros servicios 
 
 
 
-# LEVANTAR PROYECTO CON DOCKER 
+# LEVANTAR PROYECTO CON DOCKER ---modificado
 
 ## PASO 1 
 
@@ -122,4 +122,6 @@ npm run test:contracts:provider
 ```
 
 Nota: la verificación del provider asume que las rutas expuestas por el servicio coinciden con las interacciones definidas (si usas rutas diferentes ajusta las pruebas en `src/contracts/`).
+
+by noemi:-*
 
