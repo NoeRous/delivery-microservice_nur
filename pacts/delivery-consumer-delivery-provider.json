@@ -1,107 +1,107 @@
 {
-  "consumer": {
-    "name": "delivery-consumer"
-  },
-  "interactions": [
-    {
-      "description": "a request to assign a package",
-      "providerState": "package exists and dealer exists",
-      "request": {
-        "body": {
-          "dealerId": "22222222-2222-4222-8222-222222222222",
-          "packageId": "11111111-1111-4111-8111-111111111111"
-        },
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "matchingRules": {
-          "$.body.dealerId": {
-            "match": "regex",
-            "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
-          },
-          "$.body.packageId": {
-            "match": "regex",
-            "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
-          }
-        },
-        "method": "POST",
-        "path": "/packages/assign"
-      },
-      "response": {
-        "body": {
-          "success": true
-        },
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "matchingRules": {
-          "$.body.success": {
-            "match": "type"
-          }
-        },
-        "status": 200
-      }
-    },
-    {
-      "description": "a request to create a package",
-      "providerState": "provider accepts a new package",
-      "request": {
-        "body": {
-          "address": "Calle Falsa 123",
-          "cellPhone": "+34123456789",
-          "recipientName": "Juan Perez"
-        },
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "matchingRules": {
-          "$.body.address": {
-            "match": "type"
-          },
-          "$.body.cellPhone": {
-            "match": "type"
-          },
-          "$.body.recipientName": {
-            "match": "type"
-          }
-        },
-        "method": "POST",
-        "path": "/packages"
-      },
-      "response": {
-        "body": {
-          "id": "b3c4a9b0-0000-4000-8000-000000000000",
-          "recipientName": "Juan Perez"
-        },
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "matchingRules": {
-          "$.body.id": {
-            "match": "regex",
-            "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
-          },
-          "$.body.recipientName": {
-            "match": "type"
-          }
-        },
-        "status": 201
-      }
-    }
-  ],
-  "metadata": {
-    "pact-js": {
-      "version": "12.5.2"
-    },
-    "pactRust": {
-      "ffi": "0.4.20",
-      "models": "1.2.0"
-    },
-    "pactSpecification": {
-      "version": "2.0.0"
-    }
-  },
-  "provider": {
-    "name": "delivery-provider"
-  }
+	"consumer": {
+		"name": "delivery-consumer"
+	},
+	"interactions": [
+		{
+			"description": "a request to assign a package",
+			"providerState": "package exists and dealer exists",
+			"request": {
+				"body": {
+					"dealerId": "22222222-2222-4222-8222-222222222222",
+					"packageId": "11111111-1111-4111-8111-111111111111"
+				},
+				"headers": {
+					"Content-Type": "application/json"
+				},
+				"matchingRules": {
+					"$.body.dealerId": {
+						"match": "regex",
+						"regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+					},
+					"$.body.packageId": {
+						"match": "regex",
+						"regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+					}
+				},
+				"method": "POST",
+				"path": "/packages/assign"
+			},
+			"response": {
+				"body": {
+					"success": true
+				},
+				"headers": {
+					"Content-Type": "application/json"
+				},
+				"matchingRules": {
+					"$.body.success": {
+						"match": "type"
+					}
+				},
+				"status": 200
+			}
+		},
+		{
+			"description": "a request to create a package",
+			"providerState": "provider accepts a new package",
+			"request": {
+				"body": {
+					"address": "Calle Falsa 123",
+					"cellPhone": "+34123456789",
+					"recipientName": "Juan Perez"
+				},
+				"headers": {
+					"Content-Type": "application/json"
+				},
+				"matchingRules": {
+					"$.body.address": {
+						"match": "type"
+					},
+					"$.body.cellPhone": {
+						"match": "type"
+					},
+					"$.body.recipientName": {
+						"match": "type"
+					}
+				},
+				"method": "POST",
+				"path": "/packages"
+			},
+			"response": {
+				"body": {
+					"id": "b3c4a9b0-0000-4000-8000-000000000000",
+					"recipientName": "Juan Perez"
+				},
+				"headers": {
+					"Content-Type": "application/json"
+				},
+				"matchingRules": {
+					"$.body.id": {
+						"match": "regex",
+						"regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+					},
+					"$.body.recipientName": {
+						"match": "type"
+					}
+				},
+				"status": 201
+			}
+		}
+	],
+	"metadata": {
+		"pact-js": {
+			"version": "12.5.2"
+		},
+		"pactRust": {
+			"ffi": "0.4.20",
+			"models": "1.2.0"
+		},
+		"pactSpecification": {
+			"version": "2.0.0"
+		}
+	},
+	"provider": {
+		"name": "delivery-provider"
+	}
 }
