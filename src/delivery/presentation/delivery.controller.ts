@@ -47,7 +47,8 @@ export class DeliveryController implements OnModuleInit {
 		);
 
 		const result = await this.commandBus.execute(command);
-		const dealerId = typeof result === 'object' && result.id ? result.id : result; // Ensure dealerId is extracted correctly
+		const dealerId =
+			typeof result === 'object' && result.id ? result.id : result; // Ensure dealerId is extracted correctly
 
 		return {
 			message: 'Dealer created successfully',

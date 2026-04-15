@@ -1,13 +1,16 @@
 # Microservicio Delivery
 
 ## Descripción
+
 Este microservicio gestiona la logística de entrega de paquetes. Permite:
+
 - Crear Dealers (repartidores).
 - Crear Paquetes.
 - Crear rutas y asociar múltiples paquetes a ellas
 - Marcar paquetes como En Tránsito o Entregados
 
 El microservicio está desarrollado aplicando:
+
 - **Domain Driven Design (DDD)**
 - **Arquitectura Limpia**
 - **CQRS**
@@ -16,77 +19,71 @@ No incluye frontend; expone una API REST para ser consumida por otros servicios 
 
 ## Endpoints
 
-
-
 | Método   | Ruta                              | Acción                                      |
-| -------- | --------------------------------- | ------------------------------------------- |
+| -------- | --------------------------------- | ------------------------------------------- | --- |
 | **POST** | `/delivery/create-dealer`         | Crear un nuevo Repartidor                   |
-| **POST** | `/delivery/create-package`        | Crear un paquete                            |              |
+| **POST** | `/delivery/create-package`        | Crear un paquete                            |     |
 | **POST** | `/delivery/:id/deliver`           | Marcar paquete como **Entregado**           |
 | **POST** | `/delivery/:id/transit`           | Marcar paquete como **En Camino**           |
 | **POST** | `/delivery/assign-packages-route` | Crear una ruta y asignar múltiples paquetes |
 
-
 ## Capa de Dominio
 
 ### Diagrama de clases
+
 ![Diagrama de clases](docs/diagrama.png)
 
-
-
-
 ### Entidades
+
 - Dealer
 - Package
 - DeliveryRoute
 
 ### Value Objects
+
 - CellPhone
 - Address
 
 ### Agregados
+
 - DeliveryRoute (agrega paquetes y dealer)
 
 ## Tecnologías
+
 - Node.js / NestJS
 - PostgreSQL
 - TypeORM
 - CQRS (@nestjs/cqrs)
 
+# LEVANTAR PROYECTO CON DOCKER
 
-
-# LEVANTAR PROYECTO CON DOCKER ---modificado
-
-## PASO 1 
+## PASO 1
 
 crear el archivo .env envase a env.example
 
 ## PASO 2
 
-ejecutar el comando 
+ejecutar el comando
 
 docker-compose up -d
 
+# LEVANTAR PROYECTO SIN DOCKER Y EJECUACIÓN TEST
 
-
-# LEVANTAR PROYECTO SIN DOCKER Y EJECUACIÓN TEST 
-
-## PASO 1 
+## PASO 1
 
 crear el archivo .env envase a env.example
 
 ## PASO 2
 
-ejecutar el comando 
+ejecutar el comando
 
-npm install 
+npm install
 
-## PASO 3 
+## PASO 3
 
-ejecutar TEST cons JEST 
+ejecutar TEST cons JEST
 
 npm run test
-
 
 ## Contract Testing (Pact)
 
@@ -94,8 +91,8 @@ Se añadieron pruebas de contrato usando Pact para demostrar la interacción ent
 
 - Los pacts generados se almacenan en la carpeta `pacts/` en la raíz del proyecto.
 - Se incluyeron dos interacciones desde el consumidor:
-	- Crear paquete (`POST /packages`)
-	- Asignar paquete a dealer (`POST /packages/assign`)
+    - Crear paquete (`POST /packages`)
+    - Asignar paquete a dealer (`POST /packages/assign`)
 
 Cómo ejecutar las pruebas de contrato:
 
@@ -122,6 +119,3 @@ npm run test:contracts:provider
 ```
 
 Nota: la verificación del provider asume que las rutas expuestas por el servicio coinciden con las interacciones definidas (si usas rutas diferentes ajusta las pruebas en `src/contracts/`).
-
-by noemi:-*
-
