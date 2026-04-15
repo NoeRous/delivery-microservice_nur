@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Dealer } from '../../domain/entities/dealer.entity';
+import { DeepPartial } from 'typeorm';
 import { Patient } from 'src/delivery/domain/entities/patient.entity';
 import { PatientEntity } from '../typeorm/patient.entity';
 import { PatientRepository } from 'src/delivery/domain/repositories/patient.repository.interface';
@@ -28,8 +28,11 @@ export class PatientTypeOrmRepositoryImpl implements PatientRepository {
 		return entity ? Patient.fromEntity(entity) : null;
 	}
 
-	async save(patient: Patient): Promise<any> {
-		const entity = this.ormRepo.create(patient.toPersistence());
-		return await this.ormRepo.save(entity);
+	async save(patient: Patient): Promise<Patient> {
+		const entity = this.ormRepo.create(
+			patient.toPersistence() as DeepPartial<PatientEntity>,
+		);
+		const saved = await this.ormRepo.save(entity);
+		return Patient.fromEntity(saved);
 	}
 }

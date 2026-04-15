@@ -39,7 +39,7 @@ describe('CellPhone Value Object', () => {
 
 	it('debería lanzar error si el tipo es inválido', () => {
 		expect(() => {
-			new CellPhone(null as any);
+			new CellPhone(null as unknown as string | number);
 		}).toThrow('Tipo de celular inválido');
 	});
 

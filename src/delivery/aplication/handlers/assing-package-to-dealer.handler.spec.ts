@@ -6,6 +6,9 @@ import { Dealer } from '../../domain/entities/dealer.entity';
 import { DeliveryRoute } from '../../domain/entities/delivery-route.entity';
 import { CellPhone } from '../../domain/value-objects/cell-phone.vo';
 import { v4 as uuidv4 } from 'uuid';
+import type { PackageRepository } from '../../domain/repositories/package.repository.interface';
+import type { DealerRepository } from '../../domain/repositories/dealer.repository.interface';
+import type { DeliveryRouteRepository } from '../../domain/repositories/delivery-route.repository.interface';
 
 describe('AssignPackageToDealerHandler', () => {
 	it('debería asignar un paquete a un repartidor correctamente', async () => {
@@ -44,9 +47,9 @@ describe('AssignPackageToDealerHandler', () => {
 		};
 
 		const handler = new AssignPackageToDealerHandler(
-			mockPackageRepo as any,
-			mockDealerRepo as any,
-			mockDeliveryRouteRepo as any,
+			mockPackageRepo as unknown as PackageRepository,
+			mockDealerRepo as unknown as DealerRepository,
+			mockDeliveryRouteRepo as unknown as DeliveryRouteRepository,
 		);
 
 		const command = new AssingPackageToDealerCommand('PKG001', dealerId);
@@ -98,9 +101,9 @@ describe('AssignPackageToDealerHandler', () => {
 		};
 
 		const handler = new AssignPackageToDealerHandler(
-			mockPackageRepo as any,
-			mockDealerRepo as any,
-			mockDeliveryRouteRepo as any,
+			mockPackageRepo as unknown as PackageRepository,
+			mockDealerRepo as unknown as DealerRepository,
+			mockDeliveryRouteRepo as unknown as DeliveryRouteRepository,
 		);
 
 		const command = new AssingPackageToDealerCommand('PKG002', dealerId);
@@ -125,9 +128,9 @@ describe('AssignPackageToDealerHandler', () => {
 		};
 
 		const handler = new AssignPackageToDealerHandler(
-			mockPackageRepo as any,
-			mockDealerRepo as any,
-			mockDeliveryRouteRepo as any,
+			mockPackageRepo as unknown as PackageRepository,
+			mockDealerRepo as unknown as DealerRepository,
+			mockDeliveryRouteRepo as unknown as DeliveryRouteRepository,
 		);
 
 		const command = new AssingPackageToDealerCommand(
@@ -161,9 +164,9 @@ describe('AssignPackageToDealerHandler', () => {
 		};
 
 		const handler = new AssignPackageToDealerHandler(
-			mockPackageRepo as any,
-			mockDealerRepo as any,
-			mockDeliveryRouteRepo as any,
+			mockPackageRepo as unknown as PackageRepository,
+			mockDealerRepo as unknown as DealerRepository,
+			mockDeliveryRouteRepo as unknown as DeliveryRouteRepository,
 		);
 
 		const command = new AssingPackageToDealerCommand(

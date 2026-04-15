@@ -1,30 +1,31 @@
+/* eslint-disable @typescript-eslint/unbound-method, @typescript-eslint/no-unsafe-member-access */
 import { CreateDealerHandler } from './create-dealer.handler';
 import { CreateDealerCommand } from '../commands/create-dealer.command';
 import { Dealer } from 'src/delivery/domain/entities/dealer.entity';
+import type { DealerRepository } from 'src/delivery/domain/repositories/dealer.repository.interface';
 
 describe('CreateDealerCommandHandler', () => {
 	it('debería llamar al repositorio y retornar el objeto creado', async () => {
-		// Mock del repositorio con método save
-		const mockRepository = {
-			save: jest.fn().mockResolvedValue(true),
+		const mockRepository: DealerRepository = {
+			save: jest.fn().mockResolvedValue(undefined),
+			findById: jest.fn(),
+			findByIdentityCard: jest.fn(),
+			findByCellPhone: jest.fn(),
 		};
 
-		const handler = new CreateDealerHandler(mockRepository as any);
+		const handler = new CreateDealerHandler(mockRepository);
 
 		const command = new CreateDealerCommand(
-			'123456', // identityCard
-			'Juan', // firstName
-			'Perez', // lastName
-			12345678, // cellPhone válido
+			'123456',
+			'Juan',
+			'Perez',
+			12345678,
 		);
 
-		// Ejecutar handler
 		await handler.execute(command);
 
-		// Obtener el dealer que se pasó al save
 		const savedDealer = mockRepository.save.mock.calls[0][0] as Dealer;
 
-		// Validar usando el método toPersistence()
 		expect(savedDealer.toPersistence()).toMatchObject({
 			firstName: 'Juan',
 			lastName: 'Perez',
@@ -32,7 +33,6 @@ describe('CreateDealerCommandHandler', () => {
 			cellPhone: 12345678,
 		});
 
-		// Validar que save fue llamado una vez
 		expect(mockRepository.save).toHaveBeenCalledTimes(1);
 	});
 });

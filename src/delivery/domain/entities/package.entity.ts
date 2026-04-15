@@ -1,6 +1,5 @@
 import { PackageCreatedEvent } from '../events/package-create.event';
 import { PackageDeliveredEvent } from '../events/package-delivered.event';
-import { PackageInTransitEvent } from '../events/package-in-transit.event';
 import { Address } from '../value-objects/address.vo';
 
 export class Package {

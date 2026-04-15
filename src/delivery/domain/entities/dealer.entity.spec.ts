@@ -1,6 +1,8 @@
 import { Dealer } from './dealer.entity';
 import { CellPhone } from '../value-objects/cell-phone.vo';
 import { v4 as uuidv4 } from 'uuid';
+import type { DealerEntity } from '../../infrastructure/typeorm/dealer.entity';
+import type { DealerRepository } from '../repositories/dealer.repository.interface';
 
 describe('Dealer Entity', () => {
 	it('debería crear un repartidor correctamente', () => {
@@ -66,7 +68,7 @@ describe('Dealer Entity', () => {
 			cellPhone,
 		);
 
-		const persistence = dealer.toPersistence();
+		const persistence: Record<string, unknown> = dealer.toPersistence();
 
 		expect(persistence).toEqual({
 			id: dealerId,
@@ -86,7 +88,7 @@ describe('Dealer Entity', () => {
 			cellPhone: 67800000,
 		};
 
-		const dealer = Dealer.fromEntity(dealerEntity as any);
+		const dealer = Dealer.fromEntity(dealerEntity as DealerEntity);
 
 		expect(dealer.id).toBe('DEALER001');
 		expect(dealer.identityCard).toBe('654321');
@@ -105,15 +107,16 @@ describe('Dealer Entity', () => {
 			cellPhone,
 		);
 
-		// Mock del repositorio que simula un repartidor existente
-		const mockRepository = {
+		const mockRepository: DealerRepository = {
 			findById: jest.fn().mockResolvedValue(dealer),
+			findByIdentityCard: jest.fn(),
 			findByCellPhone: jest.fn().mockResolvedValue(null),
+			save: jest.fn(),
 		};
 
 		await expect(
 			Dealer.ensureDealerIsUnique(
-				mockRepository as any,
+				mockRepository,
 				'123456',
 				new CellPhone(98765432),
 			),
@@ -121,33 +124,31 @@ describe('Dealer Entity', () => {
 	});
 
 	it('debería validar que los repartidores sean únicos por celular', async () => {
-		const dealerId = uuidv4();
 		const cellPhone = new CellPhone(78900000);
 
-		const mockRepository = {
+		const mockRepository: DealerRepository = {
 			findById: jest.fn().mockResolvedValue(null),
-			findByCellPhone: jest.fn().mockResolvedValue(true),
+			findByIdentityCard: jest.fn(),
+			findByCellPhone: jest.fn().mockResolvedValue(cellPhone),
+			save: jest.fn(),
 		};
 
 		await expect(
-			Dealer.ensureDealerIsUnique(
-				mockRepository as any,
-				'111111',
-				cellPhone,
-			),
+			Dealer.ensureDealerIsUnique(mockRepository, '111111', cellPhone),
 		).rejects.toThrow('Ya existe un repartidor con el celular 78900000');
 	});
 
 	it('debería permitir crear un repartidor único', async () => {
-		const mockRepository = {
+		const mockRepository: DealerRepository = {
 			findById: jest.fn().mockResolvedValue(null),
+			findByIdentityCard: jest.fn(),
 			findByCellPhone: jest.fn().mockResolvedValue(null),
+			save: jest.fn(),
 		};
 
-		// No debe lanzar error
 		await expect(
 			Dealer.ensureDealerIsUnique(
-				mockRepository as any,
+				mockRepository,
 				'999999',
 				new CellPhone(77777777),
 			),

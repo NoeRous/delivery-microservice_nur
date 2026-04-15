@@ -15,7 +15,7 @@ export class CreateDealerHandler
 		private readonly dealerRepository: DealerRepository,
 	) {}
 
-	async execute(command: CreateDealerCommand): Promise<void> {
+	async execute(command: CreateDealerCommand): Promise<string> {
 		const cellPhone = new CellPhone(command.cellPhone);
 		//validamos el duplicado
 		//await Dealer.ensureDealerIsUnique(this.dealerRepository, command.identityCard, cellPhone);
@@ -28,5 +28,6 @@ export class CreateDealerHandler
 			cellPhone,
 		);
 		await this.dealerRepository.save(dealer);
+		return id; // Return the created dealer ID
 	}
 }

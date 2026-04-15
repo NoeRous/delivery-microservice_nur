@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */
 import { Package } from './package.entity';
 import { Address } from '../value-objects/address.vo';
 

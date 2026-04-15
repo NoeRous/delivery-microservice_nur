@@ -1,6 +1,6 @@
 import { Controller, Logger } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { MessagePattern } from '@nestjs/microservices';
 
 @Controller()
 export class AddressController {
@@ -9,7 +9,7 @@ export class AddressController {
 	constructor(private readonly commandBus: CommandBus) {}
 
 	@MessagePattern('create_address_patient')
-	async createAddressPatient(@Payload() body: any) {
+	createAddressPatient(): { message: string } {
 		this.logger.log('Mensaje recibido de crear direccion de paciente');
 
 		return {

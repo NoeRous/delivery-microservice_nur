@@ -1,25 +1,30 @@
-import { Catch, ArgumentsHost, RpcExceptionFilter } from '@nestjs/common';
+import { Catch, RpcExceptionFilter } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { Observable, throwError } from 'rxjs';
 
+interface RpcErrorResponse {
+	statusCode: number;
+	message: string;
+	code: string;
+}
+
 @Catch()
 export class GlobalRpcExceptionFilter implements RpcExceptionFilter {
-	catch(exception: any, host: ArgumentsHost): Observable<any> {
-		// Si ya es RpcException, lo dejamos pasar
+	catch(exception: unknown): Observable<RpcErrorResponse> {
 		if (exception instanceof RpcException) {
-			return throwError(() => exception.getError());
+			return throwError(() => exception.getError() as RpcErrorResponse);
 		}
 
-		// Si tiene statusCode personalizado
-		if (exception.statusCode) {
+		const err = exception as Record<string, unknown>;
+
+		if (err && typeof err.statusCode === 'number') {
 			return throwError(() => ({
-				statusCode: exception.statusCode,
-				message: exception.message,
-				code: exception.code || 'BUSINESS_ERROR',
+				statusCode: err.statusCode as number,
+				message: (err.message as string) || 'Error',
+				code: (err.code as string) || 'BUSINESS_ERROR',
 			}));
 		}
 
-		// Error inesperado
 		return throwError(() => ({
 			statusCode: 500,
 			message: 'Internal microservice error',

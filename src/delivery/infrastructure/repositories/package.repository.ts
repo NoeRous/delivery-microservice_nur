@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Repository, DeepPartial } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PackageRepository } from 'src/delivery/domain/repositories/package.repository.interface';
 import { PackageEntity } from '../typeorm/package.entity';
@@ -15,8 +15,9 @@ export class PackageTypeOrmRepositoryImpl implements PackageRepository {
 	) {}
 
 	async save(pkg: Package): Promise<void> {
-		console.log('pkg.toPersistence()', pkg.toPersistence());
-		const entity = this.ormRepo.create(pkg.toPersistence());
+		const entity = this.ormRepo.create(
+			pkg.toPersistence() as DeepPartial<PackageEntity>,
+		);
 
 		await this.ormRepo.save(entity);
 	}
@@ -25,6 +26,17 @@ export class PackageTypeOrmRepositoryImpl implements PackageRepository {
 		const entity = await this.ormRepo.findOne({ where: { id } });
 		if (!entity) return null;
 
+		return this.mapToPackage(entity);
+	}
+
+	async findAllPending(): Promise<Package[]> {
+		const entities = await this.ormRepo.find({
+			where: { status: 'pending' },
+		});
+		return entities.map((e) => this.mapToPackage(e));
+	}
+
+	private mapToPackage(entity: PackageEntity): Package {
 		return new Package(
 			entity.id,
 			entity.patientId,
@@ -35,21 +47,7 @@ export class PackageTypeOrmRepositoryImpl implements PackageRepository {
 				entity.lat,
 				entity.lng,
 			),
-		);
-	}
-
-	async findAllPending(): Promise<Package[]> {
-		const entities = await this.ormRepo.find({
-			where: { status: 'pending' },
-		});
-		return entities.map(
-			(e) =>
-				new Package(
-					e.id,
-					e.patientId,
-					e.deliveryDate,
-					new Address(e.addressStreet, e.addressStreet, e.lat, e.lng),
-				),
+			entity.deliveryRouteId,
 		);
 	}
 }
