@@ -2,6 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { DeliveryController } from '../delivery.controller';
 import { CommandBus } from '@nestjs/cqrs';
 
+// Mock Kafka Service
+const kafkaServiceMock = {
+  send: jest.fn(),
+};
+
 describe('DeliveryController', () => {
 	let controller: DeliveryController;
 	let commandBusMock: { execute: jest.Mock };
@@ -17,6 +22,10 @@ describe('DeliveryController', () => {
 				{
 					provide: CommandBus,
 					useValue: commandBusMock,
+				},
+				{
+					provide: 'KAFKA_SERVICE',
+					useValue: kafkaServiceMock,
 				},
 			],
 		}).compile();

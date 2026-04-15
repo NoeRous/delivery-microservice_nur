@@ -46,12 +46,13 @@ describe('Pact Consumer tests (delivery-consumer -> delivery-provider)', () => {
 		afterEach(async () => {
 			try {
 				await provider.verify();
-			} catch (err: any) {
+			} catch (err: unknown) {
+				const error = err as Error & { details?: unknown };
 				console.error(
 					'Pact verification failed!',
-					err && err.message ? err.message : err,
+					error?.message ? error.message : err,
 				);
-				if (err && err.details) console.error('Details:', err.details);
+				if (error?.details) console.error('Details:', error.details);
 				throw err;
 			}
 		});
@@ -74,10 +75,11 @@ describe('Pact Consumer tests (delivery-consumer -> delivery-provider)', () => {
 				);
 				expect(res.status).toBe(201);
 				expect(res.data).toHaveProperty('id');
-			} catch (err: any) {
+			} catch (err: unknown) {
+				const error = err as Error;
 				console.error(
 					'Axios error on create-package call:',
-					err && err.message ? err.message : err,
+					error?.message ? error.message : err,
 				);
 				throw err;
 			}
@@ -123,12 +125,13 @@ describe('Pact Consumer tests (delivery-consumer -> delivery-provider)', () => {
 		afterEach(async () => {
 			try {
 				await provider.verify();
-			} catch (err: any) {
+			} catch (err: unknown) {
+				const error = err as Error & { details?: unknown };
 				console.error(
 					'Pact verification failed!',
-					err && err.message ? err.message : err,
+					error?.message ? error.message : err,
 				);
-				if (err && err.details) console.error('Details:', err.details);
+				if (error?.details) console.error('Details:', error.details);
 				throw err;
 			}
 		});
@@ -150,10 +153,11 @@ describe('Pact Consumer tests (delivery-consumer -> delivery-provider)', () => {
 				);
 				expect(res.status).toBe(200);
 				expect(res.data).toHaveProperty('success');
-			} catch (err: any) {
+			} catch (err: unknown) {
+				const error = err as Error;
 				console.error(
 					'Axios error on assign-package call:',
-					err && err.message ? err.message : err,
+					error?.message ? error.message : err,
 				);
 				throw err;
 			}

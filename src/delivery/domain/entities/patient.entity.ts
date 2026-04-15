@@ -1,5 +1,3 @@
-import { DealerEntity } from 'src/delivery/infrastructure/typeorm/dealer.entity';
-import { DealerRepository } from '../repositories/dealer.repository.interface';
 import { CellPhone } from '../value-objects/cell-phone.vo';
 import { PatientEntity } from 'src/delivery/infrastructure/typeorm/patient.entity';
 

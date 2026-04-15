@@ -1,11 +1,6 @@
 import { Controller, Inject, Logger, OnModuleInit } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import {
-	ClientKafka,
-	EventPattern,
-	MessagePattern,
-	Payload,
-} from '@nestjs/microservices';
+import { ClientKafka, MessagePattern, Payload } from '@nestjs/microservices';
 
 import { AssingPackageToDealerCommand } from '../aplication/commands/assign-package-to-dealer.command';
 import { CreateDealerCommand } from '../aplication/commands/create-dealer.command';
@@ -14,6 +9,9 @@ import { CreatePackageCommand } from '../aplication/commands/create-package.comm
 import { CreateRouteWithPackagesCommand } from '../aplication/commands/create-route-with-packages.command';
 import { TransitPackageCommand } from '../aplication/commands/transit-package.command';
 import { CreateDealerDto } from './dto/create-dealer.dto';
+import { AssignPackageDto } from './dto/assign-package.dto';
+import { CreatePackageDto } from './dto/create-package.dto';
+import { AssignPackagesDto } from './dto/assign-packages.dto';
 
 @Controller()
 export class DeliveryController implements OnModuleInit {
@@ -34,7 +32,9 @@ export class DeliveryController implements OnModuleInit {
 	// CREAR REPARTIDOR
 	// =========================
 	@MessagePattern('create_dealer')
-	async createDealer(@Payload() body: CreateDealerDto) {
+	async createDealer(
+		@Payload() body: CreateDealerDto,
+	): Promise<{ message: string; dealer: { id: string } }> {
 		this.logger.log(
 			`Mensaje recibido create_dealer: ${JSON.stringify(body)}`,
 		);
@@ -46,11 +46,12 @@ export class DeliveryController implements OnModuleInit {
 			body.cellPhone,
 		);
 
-		const dealer = await this.commandBus.execute(command);
+		const result = await this.commandBus.execute(command);
+		const dealerId = typeof result === 'object' && result.id ? result.id : result; // Ensure dealerId is extracted correctly
 
 		return {
 			message: 'Dealer created successfully',
-			dealer,
+			dealer: { id: dealerId },
 		};
 	}
 
@@ -58,7 +59,7 @@ export class DeliveryController implements OnModuleInit {
 	// ASIGNAR PAQUETE
 	// =========================
 	@MessagePattern('assign_package')
-	async assignPackage(@Payload() body: any) {
+	async assignPackage(@Payload() body: AssignPackageDto) {
 		this.logger.log(
 			`Mensaje recibido assign_package: ${JSON.stringify(body)}`,
 		);
@@ -108,7 +109,7 @@ export class DeliveryController implements OnModuleInit {
 	// CREAR PAQUETE
 	// =========================
 	@MessagePattern('create_package')
-	async createPackage(@Payload() body: any) {
+	async createPackage(@Payload() body: CreatePackageDto) {
 		this.logger.log(
 			`Mensaje recibido create_package: ${JSON.stringify(body)}`,
 		);
@@ -132,14 +133,16 @@ export class DeliveryController implements OnModuleInit {
 	// ASIGNAR RUTA
 	// =========================
 	@MessagePattern('assign_packages_route')
-	async assignPackagesRoute(@Payload() body: any) {
+	async assignPackagesRoute(
+		@Payload() body: AssignPackagesDto,
+	): Promise<{ routeId: string; status: boolean }> {
 		this.logger.log(
 			`Mensaje recibido assign_packages_route: ${JSON.stringify(body)}`,
 		);
 
 		const command = new CreateRouteWithPackagesCommand(
 			body.deliveryId,
-			body.deliveryDate,
+			new Date(body.deliveryDate),
 			body.packages,
 		);
 

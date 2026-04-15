@@ -28,7 +28,13 @@ export class DealerTypeOrmRepositoryImpl implements DealerRepository {
 	}
 
 	async save(dealer: Dealer): Promise<void> {
-		const entity = this.ormRepo.create(dealer.toPersistence());
+		const entity = this.ormRepo.create({
+			id: dealer.id,
+			identityCard: dealer.identityCard,
+			firstName: dealer.fullName.split(' ')[0],
+			lastName: dealer.fullName.split(' ')[1] || '',
+			cellPhone: dealer.cellPhone.getValue(),
+		});
 
 		await this.ormRepo.save(entity);
 	}

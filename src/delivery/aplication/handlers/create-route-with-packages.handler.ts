@@ -7,6 +7,11 @@ import { Address } from '../../domain/value-objects/address.vo';
 
 import { Inject } from '@nestjs/common';
 
+interface CreateRouteResult {
+	routeId: string;
+	status: boolean;
+}
+
 @CommandHandler(CreateRouteWithPackagesCommand)
 export class CreateRouteWithPackagesHandler
 	implements ICommandHandler<CreateRouteWithPackagesCommand>
@@ -16,7 +21,9 @@ export class CreateRouteWithPackagesHandler
 		private readonly uow: UnitOfWorkRepository,
 	) {}
 
-	async execute(command: CreateRouteWithPackagesCommand): Promise<any> {
+	async execute(
+		command: CreateRouteWithPackagesCommand,
+	): Promise<CreateRouteResult> {
 		await this.uow.start();
 
 		try {
@@ -59,7 +66,7 @@ export class CreateRouteWithPackagesHandler
 			}
 
 			await this.uow.complete();
-			return { routeId: route?.id, status: true };
+			return { routeId: route.id, status: true };
 		} catch (err) {
 			await this.uow.rollback();
 			throw err;

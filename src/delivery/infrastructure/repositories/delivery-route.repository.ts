@@ -3,9 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository } from 'typeorm';
 import type { DeliveryRouteRepository } from 'src/delivery/domain/repositories/delivery-route.repository.interface';
 import { DeliveryRoute } from 'src/delivery/domain/entities/delivery-route.entity';
+import { Package } from 'src/delivery/domain/entities/package.entity';
+import { Address } from 'src/delivery/domain/value-objects/address.vo';
 
 import { DealerEntity } from '../typeorm/dealer.entity';
-import { PackageEntity } from '../typeorm/package.entity';
 import { DeliveryRouteEntity } from '../typeorm/delivery_routes.entity';
 import { Dealer } from 'src/delivery/domain/entities/dealer.entity';
 
@@ -49,10 +50,11 @@ export class DeliveryRouteTypeOrmRepositoryImpl
 		});
 		if (!entity) return null;
 
-		// Mapear a agregado de dominio
 		const dealer = Dealer.fromEntity(entity.dealer);
 		const route = new DeliveryRoute(entity.id, entity.date, dealer);
-		entity.packages.forEach((pkg) => route.addPackage(pkg as any));
+		entity.packages.forEach((pkg) =>
+			route.addPackage(this.mapToPackage(pkg)),
+		);
 		return route;
 	}
 
@@ -71,7 +73,9 @@ export class DeliveryRouteTypeOrmRepositoryImpl
 		return entities.map((e) => {
 			const dealer = Dealer.fromEntity(e.dealer);
 			const route = new DeliveryRoute(e.id, e.date, dealer);
-			e.packages.forEach((pkg) => route.addPackage(pkg as any));
+			e.packages.forEach((pkg) =>
+				route.addPackage(this.mapToPackage(pkg)),
+			);
 			return route;
 		});
 	}
@@ -89,8 +93,27 @@ export class DeliveryRouteTypeOrmRepositoryImpl
 		return entities.map((e) => {
 			const dealer = Dealer.fromEntity(e.dealer);
 			const route = new DeliveryRoute(e.id, e.date, dealer);
-			e.packages.forEach((pkg) => route.addPackage(pkg as any));
+			e.packages.forEach((pkg) =>
+				route.addPackage(this.mapToPackage(pkg)),
+			);
 			return route;
 		});
+	}
+
+	private mapToPackage(
+		entity: DeliveryRouteEntity['packages'][number],
+	): Package {
+		return new Package(
+			entity.id,
+			entity.patientId,
+			entity.deliveryDate,
+			new Address(
+				entity.addressStreet,
+				'',
+				entity.lat ?? 0,
+				entity.lng ?? 0,
+			),
+			entity.deliveryRouteId,
+		);
 	}
 }

@@ -1,6 +1,5 @@
 import { DataSource } from 'typeorm';
 import { Seeder } from 'typeorm-extension';
-import { PatientEntity } from '../../typeorm/patient.entity';
 import { DealerEntity } from '../../typeorm/dealer.entity';
 
 export default class DealerSeeder implements Seeder {

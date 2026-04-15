@@ -111,7 +111,7 @@ describe('DeliveryRoute Entity', () => {
 			new CellPhone(78900000),
 		);
 		const date = new Date('2024-01-20');
-		const route = new DeliveryRoute(uuidv4(), date, date);
+		const route = new DeliveryRoute(uuidv4(), date, dealer);
 
 		const pkg1 = new Package(
 			'PKG001',

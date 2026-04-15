@@ -35,7 +35,7 @@ export class AssignPackageToDealerHandler
 			dateNow,
 		);
 
-		let route;
+		let route: DeliveryRoute;
 		if (routes.length > 0) {
 			route = routes[0];
 		} else {
@@ -46,7 +46,6 @@ export class AssignPackageToDealerHandler
 
 		await this.deliveryRouteRepo.save(route);
 		pkg.markInTransit();
-
 		await this.packageRepo.save(pkg);
 	}
 }

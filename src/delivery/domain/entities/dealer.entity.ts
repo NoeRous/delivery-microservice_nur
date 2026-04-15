@@ -67,13 +67,19 @@ export class Dealer {
 		);
 	}
 
-	toPersistence(): any {
+	toPersistence(): {
+		id: string;
+		identityCard: string;
+		firstName: string;
+		lastName: string;
+		cellPhone: number;
+	} {
 		return {
 			id: this.id,
 			identityCard: this.identityCard,
 			firstName: this._name,
 			lastName: this._lastName,
-			cellPhone: this.cellPhone.getValue(), // solo el valor primitivo
+			cellPhone: this.cellPhone.getValue(),
 		};
 	}
 }

@@ -1,5 +1,5 @@
 import path from 'path';
-import { Verifier } from '@pact-foundation/pact';
+import { Verifier, VerifierOptions } from '@pact-foundation/pact';
 
 describe.skip('Pact Provider Verification (delivery-provider)', () => {
 	it('validates the expectations of delivery-consumer', async () => {
@@ -9,14 +9,14 @@ describe.skip('Pact Provider Verification (delivery-provider)', () => {
 			'delivery-consumer-delivery-provider.json',
 		);
 
-		const opts = {
+		const opts: VerifierOptions = {
 			providerBaseUrl: 'http://localhost:3000',
 			pactUrls: [pactFile],
 			provider: 'delivery-provider',
-			logLevel: 'warn' as any,
+			logLevel: 'WARN',
 			publishVerificationResult: false,
 			providerVersion: '1.0.0',
-		} as any;
+		};
 
 		const verifier = new Verifier(opts);
 		await verifier.verifyProvider(opts);

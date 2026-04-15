@@ -21,7 +21,7 @@ export class DeliveryScheduleController implements OnModuleInit {
 	}
 
 	@MessagePattern('create_schedule_patient')
-	async createSchedulePatient(@Payload() body: any) {
+	createSchedulePatient(): { message: string } {
 		this.logger.log('Mensaje recibido de crear calendario de paciente');
 
 		return {
@@ -30,7 +30,7 @@ export class DeliveryScheduleController implements OnModuleInit {
 	}
 
 	@MessagePattern('get_confirmed_deliveries_by_date')
-	async deliveryConfirm(@Payload() date: string) {
+	deliveryConfirm(@Payload() date: string) {
 		this.logger.log(`Listing confirmed deliveries for ${date}`);
 
 		const confirmedDeliveries = [
