@@ -1,50 +1,23 @@
-services:
-    db-server:
-        image: postgres:16
-        ports:
-            - 5432:5432
-        environment:
-            - POSTGRES_DB=${DB_NAME}
-            - POSTGRES_USER=${DB_USER}
-            - POSTGRES_PASSWORD=${DB_PASS}
-        volumes:
-            - postgresql-data:/var/lib/postgresql/data
-        deploy:
-            replicas: 3
-            resources:
-                limits:
-                    cpus: '0.50'
-                    memory: 512M
-            restart_policy:
-                condition: on-failure
-    rest-api:
-        image: noerous/proyecto_grupo1_delivery:1.0.0
-        #build: .
-        ports:
-            - 3000:3000
-        environment:
-            - PORT=3000
-            - DB_HOST=${DB_HOST}
-            - DB_PORT=${DB_PORT}
-            - DB_USER=${DB_USER}
-            - DB_PASS=${DB_PASS}
-            - DB_NAME=${DB_NAME}
-        volumes:
-            - code:/src
-        deploy:
-            replicas: 3
-            resources:
-                limits:
-                    cpus: '0.50'
-                    memory: 512M
-            restart_policy:
-                condition: on-failure
+version: '3.8'
 
-        #depends_on: #es ignorado en prod
-        # - db-server
-        #secrets:
-        #  - config
+services:
+  db-server:
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    volumes:
+      - postgresql-data:/var/lib/postgresql/data
+
+  rest-api:
+    image: noerous/proyecto_grupo1_delivery:latest
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - db-server
 
 volumes:
-    code:
-    postgresql-data:
+  postgresql-data:
