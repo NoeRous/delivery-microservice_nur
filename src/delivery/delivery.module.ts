@@ -31,6 +31,7 @@ import { CreatePatientHandler } from './aplication/handlers/create-patient.handl
 import { AddressController } from './presentation/address.controller';
 import { DeliveryScheduleController } from './presentation/delivery-schedule.controller';
 import { PackageController } from './presentation/package.controller';
+import { HealthController } from './presentation/health.controller';
 
 @Module({
 	imports: [
@@ -40,6 +41,7 @@ import { PackageController } from './presentation/package.controller';
 			DeliveryRouteEntity,
 			DealerEntity,
 			PatientEntity,
+			HealthController,
 		]),
 
 		ClientsModule.register([
