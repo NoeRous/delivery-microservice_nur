@@ -3,7 +3,7 @@ name: Release
 on:
     push:
         branches:
-            - master
+            - main
 
 jobs:
     build-and-test:
@@ -59,15 +59,54 @@ jobs:
                       docker-compose up -d
                       echo "Despliegue finalizado exitosamente."
 
-            - name: Monitor logs after release
+    monitor:
+        needs: release
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Wait for services to be ready
+              run: sleep 30
+
+            - name: Health check
+              run: |
+                  curl -f http://${{ secrets.PROD_IP }}:${{ secrets.PROD_PORT }}/health || exit 1
+
+            - name: Verify deployment status via SSH
               uses: appleboy/ssh-action@master
               with:
                   host: ${{ secrets.SSH_HOST }}
                   username: ${{ secrets.SSH_USERNAME }}
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   script: |
-                      echo "Esperando a que los logs se estabilicen..."
-                      sleep 10
-                      docker logs rest-api --tail 20
-                      echo "Estado del contenedor:"
-                      docker ps -f name=rest-api
+                      echo "=== Estado de contenedores ==="
+                      docker ps -a --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+
+                      echo ""
+                      echo "=== Uso de recursos ==="
+                      docker stats rest-api --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.NetIO}}"
+
+                      echo ""
+                      echo "=== Logs recientes (ultimas 30 lineas) ==="
+                      docker logs rest-api --tail 30
+
+                      echo ""
+                      echo "=== Ultimo commit desplegado ==="
+                      docker inspect rest-api --format='{{.Config.Labels}}' 2>/dev/null || echo "Sin labels disponibles"
+
+            - name: Uptime monitoring setup
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USERNAME }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  script: |
+                      echo "=== Verificando uptime del servicio ==="
+                      if docker ps | grep -q rest-api; then
+                          echo "Contenedor rest-api esta ejecutandose"
+                          docker exec rest-api sh -c "echo 'Uptime del contenedor:' && cat /proc/uptime | awk '{print \$1}'"
+                      else
+                          echo "ERROR: El contenedor rest-api no esta ejecutandose"
+                          exit 1
+                      fi
