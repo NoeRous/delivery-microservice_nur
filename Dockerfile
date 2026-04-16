@@ -7,11 +7,11 @@ WORKDIR /app
 # Copiar package files
 COPY package*.json ./
 
-# 🔥 IMPORTANTE: evitar husky en build
+# Evitar husky
 ENV HUSKY=0
 
-# Instalar dependencias sin dev
-RUN npm ci --omit=dev
+# 🔥 instalar TODO (necesario para build)
+RUN npm ci
 
 # Copiar código
 COPY . .
@@ -19,8 +19,9 @@ COPY . .
 # Build
 RUN npm run build
 
-# Exponer puerto
+# 🔥 limpiar devDependencies después del build
+RUN npm prune --omit=dev
+
 EXPOSE 3000
 
-# Ejecutar app
 CMD ["node", "dist/main.js"]
