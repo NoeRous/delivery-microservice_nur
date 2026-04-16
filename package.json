@@ -22,7 +22,7 @@
 		"test:contracts:consumer": "jest --testPathPatterns=contracts/consumer.pact.spec.ts --runInBand",
 		"test:contracts:provider": "jest --testPathPatterns=contracts/provider.pact.spec.ts --runInBand",
 		"test:contracts": "npm run test:contracts:consumer && npm run test:contracts:provider",
-		"prepare": "husky install"
+		"prepare": "echo skip"
 	},
 	"dependencies": {
 		"@nestjs/common": "^11.0.1",
