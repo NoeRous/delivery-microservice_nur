@@ -54,9 +54,13 @@ jobs:
                   username: ${{ secrets.SSH_USERNAME }}
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   script: |
-                      cd ~/app  # Ajustar a la ruta real en tu VM
+                      cd ~/app
+
+                      echo "Actualizando contenedores..."
+                      docker-compose down
                       docker-compose pull
                       docker-compose up -d
+
                       echo "Despliegue finalizado exitosamente."
 
     monitor:
@@ -88,25 +92,14 @@ jobs:
                       docker stats rest-api --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.NetIO}}"
 
                       echo ""
-                      echo "=== Logs recientes (ultimas 30 lineas) ==="
+                      echo "=== Logs recientes ==="
                       docker logs rest-api --tail 30
 
                       echo ""
-                      echo "=== Ultimo commit desplegado ==="
-                      docker inspect rest-api --format='{{.Config.Labels}}' 2>/dev/null || echo "Sin labels disponibles"
-
-            - name: Uptime monitoring setup
-              uses: appleboy/ssh-action@master
-              with:
-                  host: ${{ secrets.SSH_HOST }}
-                  username: ${{ secrets.SSH_USERNAME }}
-                  key: ${{ secrets.SSH_PRIVATE_KEY }}
-                  script: |
-                      echo "=== Verificando uptime del servicio ==="
+                      echo "=== Estado del contenedor ==="
                       if docker ps | grep -q rest-api; then
-                          echo "Contenedor rest-api esta ejecutandose"
-                          docker exec rest-api sh -c "echo 'Uptime del contenedor:' && cat /proc/uptime | awk '{print \$1}'"
+                          echo "OK: rest-api está corriendo"
                       else
-                          echo "ERROR: El contenedor rest-api no esta ejecutandose"
+                          echo "ERROR: rest-api no está corriendo"
                           exit 1
                       fi
