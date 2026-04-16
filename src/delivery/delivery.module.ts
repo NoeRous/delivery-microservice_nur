@@ -41,7 +41,6 @@ import { HealthController } from './presentation/health.controller';
 			DeliveryRouteEntity,
 			DealerEntity,
 			PatientEntity,
-			HealthController,
 		]),
 
 		ClientsModule.register([
@@ -75,6 +74,7 @@ import { HealthController } from './presentation/health.controller';
 		AddressController,
 		DeliveryScheduleController,
 		PackageController,
+		HealthController,
 	],
 
 	providers: [
