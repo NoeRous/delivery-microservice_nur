@@ -1,4 +1,47 @@
+version: '3.8'
+
 services:
+  # ----------------------
+  # Zookeeper
+  # ----------------------
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+      # 🔥 reducir consumo de memoria
+      ZOO_HEAP_SIZE: 128
+    ports:
+      - "2181:2181"
+
+  # ----------------------
+  # Kafka Broker
+  # ----------------------
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
+      # 🔥 configuración correcta de red
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+      # 🔥 CLAVE: limitar memoria (esto evita crashes)
+      KAFKA_HEAP_OPTS: "-Xmx256M -Xms128M"
+    ports:
+      - "9092:9092"
+
+  # ----------------------
+  # Postgres
+  # ----------------------
   postgres:
     image: postgres:15
     container_name: postgres
@@ -11,6 +54,9 @@ services:
     ports:
       - "5432:5432"
 
+  # ----------------------
+  # API (NestJS)
+  # ----------------------
   rest-api:
     image: noemirous/proyecto_grupo1_delivery:latest
     container_name: rest-api
@@ -20,6 +66,10 @@ services:
       - "3000:3000"
     depends_on:
       - postgres
+      - kafka
+
+    # 🔥 MUY IMPORTANTE: esperar a Kafka
+    command: sh -c "sleep 30 && npm run start:prod"
 
 volumes:
   pgdata:

@@ -4,7 +4,11 @@ import { Transport, KafkaOptions } from '@nestjs/microservices';
 import { GlobalRpcExceptionFilter } from './delivery/infrastructure/filters/global-rpc-exception.filter';
 
 async function bootstrap() {
-	const app = await NestFactory.createMicroservice<KafkaOptions>(AppModule, {
+	// ✅ HTTP APP
+	const app = await NestFactory.create(AppModule);
+
+	// ✅ Kafka microservice
+	app.connectMicroservice<KafkaOptions>({
 		transport: Transport.KAFKA,
 		options: {
 			client: {
@@ -15,9 +19,17 @@ async function bootstrap() {
 			},
 		},
 	});
+
 	app.useGlobalFilters(new GlobalRpcExceptionFilter());
 
-	await app.listen();
+	// 🔥 arrancar Kafka
+	await app.startAllMicroservices();
+
+	// 🔥 arrancar HTTP
+	await app.listen(3000, '0.0.0.0');
+
+	console.log('🚀 HTTP running on port 3000');
+	console.log('📨 Kafka connected');
 }
 
 void bootstrap();
