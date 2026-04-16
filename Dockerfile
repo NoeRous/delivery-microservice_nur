@@ -1,25 +1,23 @@
-FROM  node:22.21.1-alpine3.21
+FROM node:22-alpine
 
 LABEL OWNER="NOEMI ANCARI MICROSERVICIO ENTREGA"
-LABEL PROJECT="MICROSERVICIO ENTREGA"
-LABEL MAINTAINER="Noe Rous" 
 
-ARG VERSION="2.5.1"
-
-ENV CONFIG_FILE_PATH="/app/config"
-ENV API_VERSION="v1"
-ENV ENVIRONMENT="production"
 WORKDIR /app
 
-COPY package.json package.json
+# Copiar solo package files primero (mejor cache)
+COPY package*.json ./
 
-RUN npm install @nestjs/cli && npm install 
+# Instalar dependencias
+RUN npm install --only=production
 
+# Copiar el resto del código
 COPY . .
-COPY .env .env
 
-EXPOSE 3000
-
+# Build
 RUN npm run build
 
+# Exponer puerto
+EXPOSE 3000
+
+# Ejecutar app
 CMD ["node", "dist/main.js"]
