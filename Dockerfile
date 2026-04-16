@@ -4,13 +4,16 @@ LABEL OWNER="NOEMI ANCARI MICROSERVICIO ENTREGA"
 
 WORKDIR /app
 
-# Copiar solo package files primero (mejor cache)
+# Copiar package files
 COPY package*.json ./
 
-# Instalar dependencias
-RUN npm install --only=production
+# 🔥 IMPORTANTE: evitar husky en build
+ENV HUSKY=0
 
-# Copiar el resto del código
+# Instalar dependencias sin dev
+RUN npm ci --omit=dev
+
+# Copiar código
 COPY . .
 
 # Build
