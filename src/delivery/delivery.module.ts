@@ -18,6 +18,7 @@ import { DeliverPackageHandler } from './aplication/handlers/deliver-package.han
 import { CreatePackageHandler } from './aplication/handlers/create-package.handler';
 import { CreateRouteWithPackagesHandler } from './aplication/handlers/create-route-with-packages.handler';
 import { TransitPackageHandler } from './aplication/handlers/transit-package.handler';
+import { GetAllDealersHandler } from './aplication/handlers/get-all-dealers.handler';
 
 // Repositories
 import { DealerTypeOrmRepositoryImpl } from './infrastructure/repositories/dealer.repository';
@@ -86,6 +87,7 @@ import { HealthController } from './presentation/health.controller';
 		TransitPackageHandler,
 		CreatePatientCommand,
 		CreatePatientHandler,
+		GetAllDealersHandler,
 
 		{ provide: 'DealerRepository', useClass: DealerTypeOrmRepositoryImpl },
 		{
