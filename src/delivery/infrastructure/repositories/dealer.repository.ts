@@ -27,6 +27,11 @@ export class DealerTypeOrmRepositoryImpl implements DealerRepository {
 		return entity ? Dealer.fromEntity(entity) : null;
 	}
 
+	async findAll(): Promise<Dealer[]> {
+		const entities = await this.ormRepo.find();
+		return entities.map((entity) => Dealer.fromEntity(entity));
+	}
+
 	async save(dealer: Dealer): Promise<void> {
 		const entity = this.ormRepo.create({
 			id: dealer.id,

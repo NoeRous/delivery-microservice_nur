@@ -1,5 +1,5 @@
 import { Controller, Inject, Logger, OnModuleInit } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ClientKafka, MessagePattern, Payload } from '@nestjs/microservices';
 
 import { AssingPackageToDealerCommand } from '../aplication/commands/assign-package-to-dealer.command';
@@ -8,6 +8,7 @@ import { DeliverPackageCommand } from '../aplication/commands/deliver-package.co
 import { CreatePackageCommand } from '../aplication/commands/create-package.command';
 import { CreateRouteWithPackagesCommand } from '../aplication/commands/create-route-with-packages.command';
 import { TransitPackageCommand } from '../aplication/commands/transit-package.command';
+import { GetAllDealersQuery } from '../aplication/queries/get-all-dealers.query';
 import { CreateDealerDto } from './dto/create-dealer.dto';
 import { AssignPackageDto } from './dto/assign-package.dto';
 import { CreatePackageDto } from './dto/create-package.dto';
@@ -21,6 +22,7 @@ export class DeliveryController implements OnModuleInit {
 		@Inject('KAFKA_SERVICE')
 		private readonly kafkaClient: ClientKafka,
 		private readonly commandBus: CommandBus,
+		private readonly queryBus: QueryBus,
 	) {}
 
 	async onModuleInit() {
@@ -148,5 +150,23 @@ export class DeliveryController implements OnModuleInit {
 		);
 
 		return this.commandBus.execute(command);
+	}
+
+	// =========================
+	// LISTAR TODOS LOS REPARTIDORES
+	// =========================
+	@MessagePattern('get_all_dealers')
+	async getAllDealers(): Promise<{
+		message: string;
+		dealers: { id: string; identityCard: string; fullName: string; cellPhone: number }[];
+	}> {
+		this.logger.log('Mensaje recibido get_all_dealers');
+
+		const dealers = await this.queryBus.execute(new GetAllDealersQuery());
+
+		return {
+			message: 'Dealers retrieved successfully',
+			dealers,
+		};
 	}
 }
